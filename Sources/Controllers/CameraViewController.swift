@@ -38,6 +38,8 @@ public final class CameraViewController: UIViewController {
   public private(set) lazy var settingsButton: UIButton = self.makeSettingsButton()
   // Button to switch between front and back camera.
   public private(set) lazy var cameraButton: UIButton = self.makeCameraButton()
+  // Button to cancel the view.
+  public private(set) lazy var cancelButton: UIButton = self.makeCancelButton()
 
   // Constraints for the focus view when it gets smaller in size.
   private var regularFocusViewConstraints = [NSLayoutConstraint]()
@@ -99,7 +101,7 @@ public final class CameraViewController: UIViewController {
     }
 
     view.layer.addSublayer(videoPreviewLayer)
-    view.addSubviews(settingsButton, flashButton, focusView, cameraButton)
+    view.addSubviews(settingsButton, flashButton, focusView, cameraButton, cancelButton)
 
     torchMode = .off
     focusView.isHidden = true
@@ -172,6 +174,12 @@ public final class CameraViewController: UIViewController {
       action: #selector(handleCameraButtonTap),
       for: .touchUpInside
     )
+    cancelButton.addTarget(
+      self,
+      action: #selector(handleCancelButtonTap),
+      for: .touchUpInside
+    )
+    
 
     NotificationCenter.default.addObserver(
       self,
@@ -195,6 +203,10 @@ public final class CameraViewController: UIViewController {
   /// Swaps camera position.
   @objc private func handleCameraButtonTap() {
     swapCamera()
+  }
+
+  @objc private func handleCancelButtonTap() {
+    delegate?.cameraViewControllerDidTapCancelButton(self)
   }
 
   /// Sets the next torch mode.
@@ -321,12 +333,21 @@ private extension CameraViewController {
           equalTo: view.safeAreaLayoutGuide.bottomAnchor,
           constant: -30
         )
+        , cancelButton.leadingAnchor.constraint(
+          equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+          constant: 13
+        )
+        , cancelButton.bottomAnchor.constraint(
+          equalTo: view.safeAreaLayoutGuide.bottomAnchor,
+          constant: -30
+        )
       )
     } else {
       NSLayoutConstraint.activate(
         flashButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 30),
         flashButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -13),
         cameraButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -30)
+        //, cancelButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -45)
       )
     }
 
@@ -343,7 +364,10 @@ private extension CameraViewController {
 
       cameraButton.widthAnchor.constraint(equalToConstant: 48),
       cameraButton.heightAnchor.constraint(equalToConstant: 48),
-      cameraButton.trailingAnchor.constraint(equalTo: flashButton.trailingAnchor)
+      cameraButton.trailingAnchor.constraint(equalTo: flashButton.trailingAnchor),
+
+      cancelButton.widthAnchor.constraint(equalToConstant: 37),
+      cancelButton.heightAnchor.constraint(equalToConstant: 37)
     )
 
     setupFocusViewConstraints()
@@ -427,6 +451,12 @@ private extension CameraViewController {
     let button = UIButton(type: .custom)
     button.setImage(imageNamed("cameraRotate"), for: UIControl.State())
     button.isHidden = !showsCameraButton
+    return button
+  }
+
+  func makeCancelButton() -> UIButton {
+    let button = UIButton(type: .custom)
+    button.setImage(imageNamed("stopRecording"), for: UIControl.State())
     return button
   }
 }
