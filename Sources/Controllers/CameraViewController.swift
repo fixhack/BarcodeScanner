@@ -122,11 +122,15 @@ public final class CameraViewController: UIViewController {
     super.viewWillTransition(to: size, with: coordinator)
     coordinator.animate(
       alongsideTransition: { [weak self] _ in
-        self?.setupVideoPreviewLayerOrientation()
+          self?.setupVideoPreviewLayerOrientation(size: CGSize)
       },
       completion: ({ [weak self] _ in
         self?.animateFocusView()
       }))
+  }
+    
+  public override func viewWillLayoutSubviews() {
+    super.viewWillLayoutSubviews()
   }
 
   // MARK: - Video capturing
@@ -397,12 +401,13 @@ private extension CameraViewController {
     NSLayoutConstraint.activate(regularFocusViewConstraints)
   }
 
-  func setupVideoPreviewLayerOrientation() {
+  func setupVideoPreviewLayerOrientation(size: CGSize) {
     guard let videoPreviewLayer = videoPreviewLayer else {
       return
     }
 
     print(" *-*-*-*-*-*- BOUNDS INFO -*-*-*-*-*-* ")
+    print("Size: height=\(size.height), width=\(size.width)")
     print("View.layer.bounds: height=\(view.layer.bounds.height), width=\(view.layer.bounds.width)")
     print("UIScreen.main.bounds: height=\(UIScreen.main.bounds.height), width=\(UIScreen.main.bounds.width)")
     print("UIApplication.shared.windows.first: height=\(UIApplication.shared.windows.first!.bounds.height), width=\(UIApplication.shared.windows.first!.bounds.width)")
