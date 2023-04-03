@@ -21,7 +21,7 @@ public final class CameraViewController: UIViewController {
   /// Focus view type.
   public var barCodeFocusViewType: FocusViewType = .animated
   public var initialCameraPosition: AVCaptureDevice.Position = .back
-  public var rotationEnable: Bool = false
+  public var rotationEnable: Bool = true
   public var showsCameraButton: Bool = false {
     didSet {
       cameraButton.isHidden = showsCameraButton
@@ -134,6 +134,13 @@ public final class CameraViewController: UIViewController {
     
   public override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
+     // To disable default animation of layer. You can comment out those lines with `CATransaction` if you want to include
+      CATransaction.begin()
+      CATransaction.setDisableActions(true)
+        view.layer.sublayers?.forEach({ layer in
+            layer.frame = view.frame
+      })
+      CATransaction.commit()
   }
 
   // MARK: - Video capturing
