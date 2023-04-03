@@ -11,6 +11,7 @@ protocol CameraViewControllerDelegate: class {
     _ controller: CameraViewController,
     didOutput metadataObjects: [AVMetadataObject]
   )
+  func cameraViewControllerDidTapCancelButton(_ controller: CameraViewController)
 }
 
 /// View controller responsible for camera controls and video capturing.
