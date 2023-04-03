@@ -21,6 +21,7 @@ public final class CameraViewController: UIViewController {
   /// Focus view type.
   public var barCodeFocusViewType: FocusViewType = .animated
   public var initialCameraPosition: AVCaptureDevice.Position = .back
+  public var rotationEnable: Bool = true
   public var showsCameraButton: Bool = false {
     didSet {
       cameraButton.isHidden = showsCameraButton
@@ -119,14 +120,27 @@ public final class CameraViewController: UIViewController {
 
   public override func viewWillTransition(to size: CGSize,
                                           with coordinator: UIViewControllerTransitionCoordinator) {
-    super.viewWillTransition(to: size, with: coordinator)
-    coordinator.animate(
-      alongsideTransition: { [weak self] _ in
-        self?.setupVideoPreviewLayerOrientation()
-      },
-      completion: ({ [weak self] _ in
-        self?.animateFocusView()
-      }))
+    if (rotationEnable) {
+        super.viewWillTransition(to: size, with: coordinator)
+        coordinator.animate(
+          alongsideTransition: { [weak self] _ in
+              self?.setupVideoPreviewLayerOrientation(size: size)
+          },
+          completion: ({ [weak self] _ in
+            self?.animateFocusView()
+          }))
+    }
+  }
+    
+  public override func viewWillLayoutSubviews() {
+    super.viewWillLayoutSubviews()
+     // To disable default animation of layer. You can comment out those lines with `CATransaction` if you want to include
+      CATransaction.begin()
+      CATransaction.setDisableActions(true)
+        view.layer.sublayers?.forEach({ layer in
+            layer.frame = view.frame
+      })
+      CATransaction.commit()
   }
 
   // MARK: - Video capturing
@@ -397,11 +411,21 @@ private extension CameraViewController {
     NSLayoutConstraint.activate(regularFocusViewConstraints)
   }
 
-  func setupVideoPreviewLayerOrientation() {
+  func setupVideoPreviewLayerOrientation(size: CGSize? = CGSize()) {
     guard let videoPreviewLayer = videoPreviewLayer else {
       return
     }
 
+    print(" *-*-*-*-*-*- BOUNDS INFO -*-*-*-*-*-* ")
+    if let size = size {
+      print("Size: height=\(size.height), width=\(size.width)")
+    }
+    print("View.layer.bounds: height=\(view.layer.bounds.height), width=\(view.layer.bounds.width)")
+    print("UIScreen.main.bounds: height=\(UIScreen.main.bounds.height), width=\(UIScreen.main.bounds.width)")
+    print("UIApplication.shared.windows.first: height=\(UIApplication.shared.windows.first!.bounds.height), width=\(UIApplication.shared.windows.first!.bounds.width)")
+    print("UIApplication.shared.windows.first.safeAreaLayoutGuide: height=\(UIApplication.shared.windows.first!.safeAreaLayoutGuide.layoutFrame.height), width=\(UIApplication.shared.windows.first!.safeAreaLayoutGuide.layoutFrame.width)")
+        
+    
     videoPreviewLayer.frame = view.layer.bounds
 
     if let connection = videoPreviewLayer.connection, connection.isVideoOrientationSupported {
