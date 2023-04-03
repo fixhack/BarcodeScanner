@@ -348,4 +348,8 @@ extension BarcodeScannerViewController: CameraViewControllerDelegate {
     codeDelegate?.scanner(self, didCaptureCode: code, type: rawType)
     animateFlash(whenProcessing: isOneTimeSearch)
   }
+
+  func cameraViewControllerDidTapCancelButton(_ controller: CameraViewController) {
+    dismissalDelegate?.scannerDidDismiss(self)
+  }
 }
