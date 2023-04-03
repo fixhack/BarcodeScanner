@@ -21,6 +21,7 @@ public final class CameraViewController: UIViewController {
   /// Focus view type.
   public var barCodeFocusViewType: FocusViewType = .animated
   public var initialCameraPosition: AVCaptureDevice.Position = .back
+  public var rotationEnable: Bool = false
   public var showsCameraButton: Bool = false {
     didSet {
       cameraButton.isHidden = showsCameraButton
@@ -119,14 +120,16 @@ public final class CameraViewController: UIViewController {
 
   public override func viewWillTransition(to size: CGSize,
                                           with coordinator: UIViewControllerTransitionCoordinator) {
-    super.viewWillTransition(to: size, with: coordinator)
-    coordinator.animate(
-      alongsideTransition: { [weak self] _ in
-          self?.setupVideoPreviewLayerOrientation(size: size)
-      },
-      completion: ({ [weak self] _ in
-        self?.animateFocusView()
-      }))
+    if (rotationEnable) {
+        super.viewWillTransition(to: size, with: coordinator)
+        coordinator.animate(
+          alongsideTransition: { [weak self] _ in
+              self?.setupVideoPreviewLayerOrientation(size: size)
+          },
+          completion: ({ [weak self] _ in
+            self?.animateFocusView()
+          }))
+    }
   }
     
   public override func viewWillLayoutSubviews() {
