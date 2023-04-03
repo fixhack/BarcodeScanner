@@ -402,6 +402,11 @@ private extension CameraViewController {
       return
     }
 
+    print(" *-*-*-*-*-*- BOUNDS INFO -*-*-*-*-*-* ")
+    print("View.layer.bounds: height=\(view.layer.bounds.height), width=\(view.layer.bounds.width)")
+    print("UIScreen.main.bounds: height=\(UIScreen.main.bounds.height), width=\(UIScreen.main.bounds.width)")
+      print("UIApplication.shared.windows.first: height=\(UIApplication.shared.windows.first!.bounds.height), width=\(UIApplication.shared.windows.first!.bounds.width)")
+      
     videoPreviewLayer.frame = view.layer.bounds
 
     if let connection = videoPreviewLayer.connection, connection.isVideoOrientationSupported {
