@@ -3,7 +3,7 @@ import UIKit
 // MARK: - State
 
 /// Barcode scanner state.
-enum State {
+public enum State {
   case scanning
   case processing
   case unauthorized
