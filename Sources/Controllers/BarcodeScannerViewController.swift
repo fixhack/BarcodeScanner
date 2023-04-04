@@ -87,7 +87,7 @@ open class BarcodeScannerViewController: UIViewController {
   }
 
   /// The current controller's status mode.
-  private var status: Status = Status(state: .scanning) {
+  public var status: Status = Status(state: .scanning) {
     didSet {
       changeStatus(from: oldValue, to: status)
     }
@@ -139,7 +139,7 @@ open class BarcodeScannerViewController: UIViewController {
     status = Status(state: .scanning, animated: animated)
   }
 
-  private func changeStatus(from oldValue: Status, to newValue: Status) {
+  public func changeStatus(from oldValue: Status, to newValue: Status) {
     guard newValue.state != .notFound else {
       messageViewController.status = newValue
       DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2.0) {

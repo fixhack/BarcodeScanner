@@ -34,7 +34,7 @@ public struct StateMessageProvider {
 // MARK: - Status
 
 /// Status is a holder of the current state with a few additional configuration properties.
-struct Status {
+public struct Status {
   /// The current state.
   let state: State
   /// Flag to enable/disable animation.
