@@ -36,11 +36,11 @@ public struct StateMessageProvider {
 /// Status is a holder of the current state with a few additional configuration properties.
 public struct Status {
   /// The current state.
-  let state: State
+  public let state: State
   /// Flag to enable/disable animation.
-  let animated: Bool
+  public let animated: Bool
   /// Text that overrides a text from the state.
-  let text: String?
+  public let text: String?
 
   /**
    Creates a new instance of `Status`.
